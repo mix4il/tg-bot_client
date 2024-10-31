@@ -7,7 +7,7 @@
       <el-table-column fixed="right" label="Действия" min-width="120">
         <template #default="scope">
           <el-button link type="primary" size="small">
-            <router-link :to="{ name: 'User', params: { id: scope.row.chatId} }">Редактировать</router-link>
+            <router-link :to="{ name: 'UserEdit', params: { id: scope.row.chatId} }">Редактировать</router-link>
           </el-button>
         </template>
       </el-table-column>

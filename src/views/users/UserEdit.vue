@@ -1,12 +1,12 @@
 <template>
   <div>
-    <el-form v-if="user" :model="user" label-width="auto" style="max-width: 600px">
-      <el-form-item label="ФИО">
-        <el-input v-model="user.name" />
+    <el-form v-if="userFormData" :model="userFormData" label-width="auto" style="max-width: 600px">
+      <el-form-item label="ФИО" prop="name">
+        <el-input v-model="userFormData.name" />
       </el-form-item>
-      <el-form-item label="Директор">
+      <el-form-item label="Директор" prop="fio">
         <el-select
-            :model-value="user.director.fio"
+            :model-value="userFormData.director?.fio ?? ''"
             placeholder="Select"
             size="large"
             style="width: 240px"
@@ -29,36 +29,33 @@
 
 </template>
 <script setup lang="ts">
-import {useMutation, useQuery} from '@tanstack/vue-query';
 import {useRoute, useRouter} from "vue-router";
-import {watch, ref, computed} from "vue";
-import {cloneDeep} from "lodash";
-import {fetchUpdateUser} from "@/shared/api/fetch";
+import {watch, computed, reactive} from "vue";
 import Director from "@/views/director/DirectorEdit.vue";
 import {useDirectorList} from "@/shared/services/apiQuery/director";
 import type {DirectorModel} from "@/shared/services";
 import {useUser} from "@/shared/services/apiQuery/user";
+import {useUserUpdate} from "@/shared/services/apiQuery/user/useUserUpdate";
+
+type userFormModel = {id: string, name: string, idDirector: string, director: DirectorModel | null}
 
 const router = useRouter()
 const route = useRoute()
 
-const { data: user } = useUser(route.params.id)
-const userFormData = ref({
+const { data: user } = useUser(String(route.params.id))
+
+let userFormData: userFormModel = reactive({
   id: '',
   name: '',
+  idDirector: '',
   director: null,
 })
 
-const { isPending, error: errorUpdate, mutate } = useMutation({
-  mutationFn: fetchUpdateUser,
-  onSuccess: (data, variables, context) => {
-    onCancel()
-  },
-})
+const { isPending, mutate } = useUserUpdate()
 
 const handlerDirector = (director: Director) => {
-  user.value.idDirector = director.id
-  user.value.director = director
+  userFormData.idDirector = director.id
+  userFormData.director = director
 }
 
 const { data: directors, } = useDirectorList()
@@ -72,14 +69,20 @@ const getDirectors = computed(() => {
 })
 const onSubmit =  () => {
   //TODO валидации
-  if (user.value) {
-    mutate(user.value)
+  if (userFormData) {
+    mutate(userFormData,{
+      onSuccess: () => {
+        onCancel()
+      }
+    })
   }
 }
 const onCancel =  () => {
   router.push({name: 'Users'})
 }
 watch(user, (newData) => {
-  userFormData.value = cloneDeep(newData.data);
+  Object.keys(newData.data).forEach((key) => {
+    userFormData[key] = newData.data[key]
+  })
 });
 </script>

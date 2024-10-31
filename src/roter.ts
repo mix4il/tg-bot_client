@@ -7,7 +7,7 @@ import DirectorCreate from "./views/director/DirectorCreate.vue";
 import Users from './views/users/Users.vue'
 import WaitingAuth from "./views/waitAuth/WaitingAuth.vue";
 import Tasks from "@/views/tasks/Tasks.vue";
-import User from "@/views/users/User.vue";
+import UserEdit from "@/views/users/UserEdit.vue";
 import Rooms from "@/views/rooms/Rooms.vue";
 import RoomsCreate from "@/views/rooms/RoomsCreate.vue";
 import RoomEdit from "@/views/rooms/RoomEdit.vue";
@@ -17,7 +17,7 @@ const routes = [
     { path: '/director/create', component: DirectorCreate, name: 'DirectorCreate' },
     { path: '/director/:id', component: DirectorEdit, name: 'DirectorEdit', props: true },
     { path: '/users', component: Users, name: 'Users' },
-    { path: '/users/:id', component: User, name: 'User', props: true  },
+    { path: '/users/:id', component: UserEdit, name: 'UserEdit', props: true  },
     { path: '/waiting-auth', component: WaitingAuth, name: 'WaitingAuth' },
     { path: '/tasks', component: Tasks, name: 'Tasks' },
     { path: '/rooms', component: Rooms, name: 'Rooms' },

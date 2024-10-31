@@ -61,8 +61,9 @@ const onSubmit =  () => {
     }
   })
 }
+
 const onCancel =  () => {
-  router.push({name: 'Rooms'})
+  router.push({name: 'пs'})
 }
 
 watch(room, (newData) => {
